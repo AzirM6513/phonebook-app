@@ -1,0 +1,28 @@
+{
+  "name": "fs-open-2021-part3",
+  "version": "0.0.1",
+  "description": "part3 for fullstack open 2021",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AzirM6513/fs-open-2021-part3.git"
+  },
+  "author": "Mena Azir",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AzirM6513/fs-open-2021-part3/issues"
+  },
+  "homepage": "https://github.com/AzirM6513/fs-open-2021-part3#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  }
+}
