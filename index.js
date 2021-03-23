@@ -33,7 +33,7 @@ app.post("/api/persons", (req, res) => {
 
   const person = new Person({
     name: body.name,
-    number: body.name,
+    number: body.number,
   });
 
   person.save().then((savedPerson) => {
