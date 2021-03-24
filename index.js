@@ -1,33 +1,34 @@
-require("dotenv").config();
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const Person = require('./models/person');
+
 const app = express();
-const Person = require("./models/person");
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static("build"));
-app.use(morgan("tiny"));
+app.use(express.static('build'));
+app.use(morgan('tiny'));
 
-app.get("/", (req, res) => {
-  res.send("<h1>Use /api/persons for data</h1>");
+app.get('/', (req, res) => {
+  res.send('<h1>Use /api/persons for data</h1>');
 });
 
-app.get("/api/persons", (req, res) => {
+app.get('/api/persons', (req, res) => {
   Person.find({}).then((persons) => {
     res.json(persons);
   });
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get('/api/persons/:id', (req, res) => {
   Person.findById(req.params.id).then((person) => {
     res.json(person);
   });
 });
 
-app.put("/api/persons/:id", (req, res, next) => {
-  const body = req.body;
+app.put('/api/persons/:id', (req, res, next) => {
+  const { body } = req.body;
 
   const person = {
     name: body.name,
@@ -41,16 +42,16 @@ app.put("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.delete("/api/persons/:id", (req, res, next) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then((result) => {
+    .then(() => {
       res.status(204).end();
     })
     .catch((error) => next(error));
 });
 
-app.post("/api/persons", (req, res, next) => {
-  const body = req.body;
+app.post('/api/persons', (req, res, next) => {
+  const { body } = req.body;
 
   const person = new Person({
     name: body.name,
@@ -65,7 +66,7 @@ app.post("/api/persons", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.get("/info", (req, res) => {
+app.get('/info', (req, res) => {
   Person.countDocuments({}, (error, size) => {
     const info = `
     <div>
@@ -79,26 +80,26 @@ app.get("/info", (req, res) => {
 });
 
 const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: "unknown endpoint" });
+  res.status(404).send({ error: 'unknown endpoint' });
 };
 
 app.use(unknownEndpoint);
 
 const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' });
+  }
 
-  if (error.name === "CastError") {
-    return res.status(400).send({ error: "malformatted id" });
-  } else if (error.name === "ValidationError") {
+  if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message });
   }
 
-  next(error);
+  return next(error);
 };
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+const { PORT } = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
